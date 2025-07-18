@@ -4,42 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/AKshare.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_memorydb.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_tables.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/df_tosql.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/initial_volsma_zh_a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/open_database.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_cxfl_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_cxg_history_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_cxsl_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_ljqs_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp10_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp20_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp250_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp30_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp500_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp5_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp60_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_rank_xstp90_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_basic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_bj_a_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_board_industry.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_north_money.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_sh_a_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_sz_a_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_zh_a_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save_stock_zh_a_new_cleaned.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/select_stock_zh_a_01.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/select_stock_zh_a_02.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ta_lib_test.py" afterDir="false" />
-    </list>
+    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="20250717" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,6 +18,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="changdalee &lt;16923071@qq.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -328,8 +298,33 @@
       <workItem from="1752803502212" duration="112000" />
       <workItem from="1752803625526" duration="1257000" />
       <workItem from="1752805419811" duration="3963000" />
-      <workItem from="1752822127681" duration="1318000" />
+      <workItem from="1752822127681" duration="1764000" />
     </task>
+    <task id="LOCAL-00001" summary="20250717">
+      <option name="closed" value="true" />
+      <created>1752827152497</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752827152497</updated>
+    </task>
+    <task id="LOCAL-00002" summary="20250717">
+      <option name="closed" value="true" />
+      <created>1752827167858</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1752827167858</updated>
+    </task>
+    <task id="LOCAL-00003" summary="20250717">
+      <option name="closed" value="true" />
+      <created>1752827176830</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1752827176830</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -345,6 +340,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="20250717" />
+    <option name="LAST_COMMIT_MESSAGE" value="20250717" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AKshare$initial_volsma_zh_a.coverage" NAME="initial_volsma_zh_a Coverage Results" MODIFIED="1752645296208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
