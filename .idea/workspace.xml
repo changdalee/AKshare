@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="20250717">
-      <change afterPath="$PROJECT_DIR$/akshare_stock_capital_flow_now.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/akshare_stock_daily.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pybroker_main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/stock_days.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tushare_main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tushare_select_stock_zh_close_01.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tushare_select_stock_zh_current_01.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tushare_stock_daily_zh_a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tushare_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/操作铁律.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/akshare.db" beforeDir="false" afterPath="$PROJECT_DIR$/akshare.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save_stock_basic.py" beforeDir="false" afterPath="$PROJECT_DIR$/stock_basic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save_stock_zh_a_cleaned.py" beforeDir="false" afterPath="$PROJECT_DIR$/save_stock_zh_a_cleaned.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/select_stock_zh_a_01.py" beforeDir="false" afterPath="$PROJECT_DIR$/select_stock_zh_a_01.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/select_stock_zh_a_02.py" beforeDir="false" afterPath="$PROJECT_DIR$/select_stock_zh_a_02.py" afterDir="false" />
-    </list>
+    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="20250717" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -341,6 +324,7 @@
       <workItem from="1753246779446" duration="1519000" />
       <workItem from="1753265256625" duration="3383000" />
       <workItem from="1753272442288" duration="3918000" />
+      <workItem from="1753336883013" duration="244000" />
     </task>
     <task id="LOCAL-00001" summary="20250717">
       <option name="closed" value="true" />
