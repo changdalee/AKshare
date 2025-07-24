@@ -1,7 +1,9 @@
-import akshare as ak
+import tushare as ts
 import pandas as pd
 import sqlite3
 from sqlite3 import OperationalError
+import time
+from datetime import date, timedelta,datetime
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -49,8 +51,19 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
+def get_daily(self, ts_code='', trade_date='', start_date='', end_date=''):
+    for _ in range(3):
+      #try:
+            if trade_date:
+                df = self.pro.daily(ts_code=ts_code, trade_date=trade_date)
+            else:
+                df = self.pro.daily(ts_code=ts_code, start_date=start_date, end_date=end_date)
+       #except TypeError:
+                time.sleep(1)
+        #else:
+        #        return df
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
     #对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
@@ -60,32 +73,64 @@ if __name__ == '__main__':
     # 显示所有行
     #pd.set_option('display.max_rows', None)
 
+    token='055680ead4592f1287876ef50197e46a76516c86268a33b8c0c565b0'
+    ts.set_token(token)
+    #print(ts.__version__)
+
     print_hi('PyCharm')
 
 
-    #个股信息查询-雪球
-    #stock_individual_basic_info_xq_df = ak.stock_individual_basic_info_xq(symbol="SZ002126")
-    stock_individual_basic_info_xq_df = ak.stock_individual_basic_info_xq(symbol="SH601127")
-    print(stock_individual_basic_info_xq_df)
+    today=datetime.now().strftime("%Y%m%d")
+    daybf1 = datetime.now() - timedelta(days=1)
+    daybefore1 = daybf1.strftime("%Y%m%d")
+    daybf2 = datetime.now() - timedelta(days=2)
+    daybefore2=daybf2.strftime("%Y%m%d")
+    daybf3 = datetime.now() - timedelta(days=3)
+    daybefore3=daybf3.strftime("%Y%m%d")
+    daybf4 = datetime.now() - timedelta(days=4)
+    daybefore4=daybf4.strftime("%Y%m%d")
+    daybf5 = datetime.now() - timedelta(days=5)
+    daybefore5=daybf5.strftime("%Y%m%d")
+    
+    
+    day_saved=today
 
-    #df = pd.DataFrame(stock_individual_basic_info_xq_df)
-    #df = df.fillna(0)  # 填充所有NaN为0
+    pro = ts.pro_api()
+    df = pro.daily(trade_date=day_saved)
+    print(df)
+    print("\n" + "_" * 99 + "\n")
+    '''
+    df = pro.trade_cal(exchange='SSE', is_open='1',
+                       start_date='20250101',
+                       end_date='20250718',
+                       fields='cal_date')
+    print(df)
+    '''
+    
+    print("\n" + "_" * 99 + "\n")
+    '''
+    for date in df['cal_date'].values:
+        df = get_daily(date)
+    '''
 
+    '''
+    df = pd.DataFrame(stock_rank_cxfl_ths_df)
     # 方法1: 直接通过列名列表选择（最常用）
-    #selected_cols = ['股票代码', '股票简称', '最新价','量价齐升天数','所属行业']
-    #df1 = df[selected_cols]
-    #df = df1.rename(columns={'股票代码': 'code', '股票简称': 'name', '最新价': 'open','量价齐升天数':'ljqs_days','所属行业':'industry'})
+    selected_cols = ['股票代码', '股票简称', '最新价']
+    df1 = df[selected_cols]
 
-    #df = df[df['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x) and '退' not in str(x))]
+    df_cleaned = df1[~df1['股票简称'].str.contains('ST', na=False)]
+    df = df_cleaned[~df_cleaned['股票简称'].str.contains('退', na=False)]
+    df = df[~df['股票简称'].str.contains('PT', na=False)]
 
-    #print(df)
+    print("方法1 - 选择指定列名:")
+    print(df)
     print("\n" + "_" * 80 + "\n")
-'''
+    '''
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='stock_basic',
+        table_name='tushare_stock_daily_'+day_saved,
         db_name='akshare.db',
         if_exists='replace'
     )
-'''
