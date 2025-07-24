@@ -1,9 +1,11 @@
 import tushare as ts
+import akshare as ak
 import pandas as pd
 import sqlite3
 from sqlite3 import OperationalError
 import time
 from datetime import date, timedelta,datetime
+#from sqlalchemy import types
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -51,18 +53,6 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
-def get_daily(self, ts_code='', trade_date='', start_date='', end_date=''):
-    for _ in range(3):
-      #try:
-            if trade_date:
-                df = self.pro.daily(ts_code=ts_code, trade_date=trade_date)
-            else:
-                df = self.pro.daily(ts_code=ts_code, start_date=start_date, end_date=end_date)
-       #except TypeError:
-                time.sleep(1)
-        #else:
-        #        return df
-
 
 if __name__ == '__main__':
     #对pandas配置，列名与数据对其显示
@@ -79,58 +69,67 @@ if __name__ == '__main__':
 
     print_hi('PyCharm')
 
+    #同花顺-数据中心-资金流向-个股资金流,symbol="即时"; choice of {“即时”, "3日排行", "5日排行", "10日排行", "20日排行"}
 
-    today=datetime.now().strftime("%Y%m%d")
-    daybf1 = datetime.now() - timedelta(days=1)
-    daybefore1 = daybf1.strftime("%Y%m%d")
-    daybf2 = datetime.now() - timedelta(days=2)
-    daybefore2=daybf2.strftime("%Y%m%d")
-    daybf3 = datetime.now() - timedelta(days=3)
-    daybefore3=daybf3.strftime("%Y%m%d")
-    daybf4 = datetime.now() - timedelta(days=4)
-    daybefore4=daybf4.strftime("%Y%m%d")
-    daybf5 = datetime.now() - timedelta(days=5)
-    daybefore5=daybf5.strftime("%Y%m%d")
-    
-    
-    day_saved=today
 
-    pro = ts.pro_api()
-    df = pro.daily(trade_date=day_saved)
+    '''
+    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM akshare_stock_capital_flow_20250722")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
+    df = pd.DataFrame(rows,columns=['序号','股票代码','股票简称','最新价','涨跌幅','换手率','流入资金','流出资金','净额','成交额','数字净额'])
+    '''
+    #symbol = "即时";    choiceof{“即时”, "3日排行", "5日排行", "10日排行", "20日排行"}
+    df = ak.stock_fund_flow_individual(symbol="即时")
+    df['数字净额']=0
+    #df['股票代码'] = df['股票代码'].astype('str')
     print(df)
-    print("\n" + "_" * 99 + "\n")
-    '''
-    df = pro.trade_cal(exchange='SSE', is_open='1',
-                       start_date='20250101',
-                       end_date='20250718',
-                       fields='cal_date')
+    print('-------------------------%%%%%%%%%%%%%%%%%%%%%%%%%%%------------------------------')
+    max_len=len(df)
+    #print(max_len)
+    count=0
+    while count<max_len:
+        if df.iloc[count,8].endswith('万'):
+            df.iloc[count,10]=round(float(df.iloc[count,8].removesuffix('万'))*10000,1)
+        elif df.iloc[count,8].endswith('亿'):
+            df.iloc[count,10] =round(float(df.iloc[count,8].removesuffix('亿'))*10000*10000,1)
+        else:
+            df.iloc[count, 10] = round(float(df.iloc[count, 8]), 1)
+        count+=1
+
+    #df['code'] = df['股票代码'].apply(lambda x: x[:6])
+    df = df.drop(df[df['数字净额'] < 20000000].index)
+    df = df[df['股票简称'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
+                                       and '退' not in str(x) )]
+
+    df= df[df['股票代码'].apply(lambda x: not str(x)>'687999')]
     print(df)
-    '''
-    
-    print("\n" + "_" * 99 + "\n")
-    '''
-    for date in df['cal_date'].values:
-        df = get_daily(date)
-    '''
 
-    '''
-    df = pd.DataFrame(stock_rank_cxfl_ths_df)
-    # 方法1: 直接通过列名列表选择（最常用）
-    selected_cols = ['股票代码', '股票简称', '最新价']
-    df1 = df[selected_cols]
+    print("\n" + "_" * 88 + "\n")
+    today = datetime.now().strftime("%Y%m%d")
 
-    df_cleaned = df1[~df1['股票简称'].str.contains('ST', na=False)]
-    df = df_cleaned[~df_cleaned['股票简称'].str.contains('退', na=False)]
-    df = df[~df['股票简称'].str.contains('PT', na=False)]
-
-    print("方法1 - 选择指定列名:")
-    print(df)
-    print("\n" + "_" * 80 + "\n")
-    '''
     # 存储到SQLite数据库
+    '''
+    dtype_mapping = {
+        '序号':types.Integer(),
+        '股票代码':types.Text(),
+        '股票简称':types.Text(),
+        '最新价':types.Float(),
+        '涨跌幅':types.Float(),
+        '换手率':types.Float(),
+        '流入资金':types.Text(),
+        '流出资金':types.Text(),
+        '净额':types.Text(),
+        '成交额':types.Text(),
+        '数字净额':types.Float()
+    }
+    '''
+    #['序号', '股票代码', '股票简称', '最新价', '涨跌幅', '换手率', '流入资金', '流出资金', '净额', '成交额','数字净额'])
     df_to_sqlite(
         df=df,
-        table_name='tushare_stock_daily_'+day_saved,
+        table_name='akshare_stock_capital_flow_'+today,
         db_name='akshare.db',
+        #dtype=dtype_mapping,
         if_exists='replace'
     )

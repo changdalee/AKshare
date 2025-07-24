@@ -92,7 +92,7 @@ if __name__ == '__main__':
     cursor.execute("SELECT * FROM stock_zh_a_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    df = pd.DataFrame(columns=['code','name', 'open', 'current','volume_ratio','turnover_ratio','total_capital','trade_capital','trade_volume','date'])
+    df = pd.DataFrame(rows,columns=['code','name', 'open', 'current','volume_ratio','turnover_ratio','total_capital','trade_capital','trade_volume'])
     today=datetime.now().strftime("%Y%m%d")
     for row in rows:
         code = row[0]
@@ -105,7 +105,7 @@ if __name__ == '__main__':
         tra= row[7]  #流通股票元
         trv= row[8]  #成交量
 
-        if ope >1.0 and ((cur-ope)/ope) >0.02 and ((cur-ope)/ope) < 0.05 and vol>1.0 and tur>5 and tur<10 and tra>5000000000 and tra<20000000000:
+        if ope >1.0 and ((cur-ope)/ope) >0.02 and ((cur-ope)/ope) < 0.05 and vol>3.0 and tur>5 and tur<10 and tra>5000000000 and tra<20000000000:
             new_row = {'code':code,'name':name,'open':ope,'current':cur,'volume_ratio':vol,'turnover_ratio':tur,'total_capital':tol,'trade_capital':tra,'trade_volume':trv,'date':today}
             df=pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 

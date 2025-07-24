@@ -78,7 +78,6 @@ if __name__ == '__main__':
 
     print_hi('PyCharm')
 
-
     today=datetime.now().strftime("%Y%m%d")
     daybf1 = datetime.now() - timedelta(days=1)
     daybefore1 = daybf1.strftime("%Y%m%d")
@@ -90,8 +89,6 @@ if __name__ == '__main__':
     daybefore4=daybf4.strftime("%Y%m%d")
     daybf5 = datetime.now() - timedelta(days=5)
     daybefore5=daybf5.strftime("%Y%m%d")
-
-    
 
     pro = ts.pro_api()
     df_today = pro.daily(trade_date=daybefore1).fillna(0)
@@ -105,8 +102,9 @@ if __name__ == '__main__':
     df=df.drop(df[df['high_x'] == '0'].index)
     '''
     df['vol_ratio']=df['vol_x']/df['vol_y']
-    df = df.drop(df[df['vol_ratio'] < 2].index)
-    df = df[df['ts_code'].apply(lambda x: not str(x) > '688000.AA')]
+    df['vol_ratio']=df['vol_ratio'].round(2)
+    df = df.drop(df[df['vol_ratio'] < 1.5].index)
+    df = df[df['ts_code'].apply(lambda x: not str(x) > '687999.AA')]
     df['code']=df['ts_code'].apply(lambda x: x[:6])
 
     conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}

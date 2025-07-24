@@ -81,6 +81,7 @@ if __name__ == '__main__':
 
 
     today=datetime.now().strftime("%Y%m%d")
+    #today = '20250721'
 
     conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
@@ -100,21 +101,24 @@ if __name__ == '__main__':
     prier_day02=prier.iloc[len(prier)-2]['days']
     # print(prier_day02)
 
-    day_saved=prier_day01
+
 
     pro = ts.pro_api()
     df00=pro.daily(trade_date=today)
+    print(df00)
+    print('00000000000000000---------------------------------------------------')
     if df00.empty:
         df01 = pro.daily(trade_date=prier_day01)
         df02 = pro.daily(trade_date=prier_day02)
         df = pd.merge(df01, df02, on='ts_code')
+        df['date']=prier_day01
+        day_saved = prier_day01
     else:
         df01 = pro.daily(trade_date=prier_day01)
         df = pd.merge(df00,df01,on='ts_code')
+        df['date'] = today
+        day_saved = today
     df['code']= df01['ts_code'].apply(lambda x: x[:6])
-    df['vol_ratio'] = 0
-    print(df)
-    print("\n" + "_" * 99 + "\n")
 
     conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
@@ -129,27 +133,15 @@ if __name__ == '__main__':
     df = df[df['code'].apply(lambda x: not str(x)>'687999')]
     print(df)
 
-
-
-    '''
-    for date in df['cal_date'].values:
-        df = get_daily(date)
-    '''
-
-    '''
-    df = pd.DataFrame(stock_rank_cxfl_ths_df)
-    # 方法1: 直接通过列名列表选择（最常用）
-    selected_cols = ['股票代码', '股票简称', '最新价']
-    df1 = df[selected_cols]
-
-    df_cleaned = df1[~df1['股票简称'].str.contains('ST', na=False)]
-    df = df_cleaned[~df_cleaned['股票简称'].str.contains('退', na=False)]
-    df = df[~df['股票简称'].str.contains('PT', na=False)]
-
-    print("方法1 - 选择指定列名:")
+    df = df.drop(df[df['vol_y'] <=0].index)
+    df['vol_ratio']=df['vol_x']/df['vol_y']
+    df['vol_ratio']=df['vol_ratio'].round(2)
+    df = df.drop(df[df['vol_ratio'] < 1.5].index)
+    #df[['date', 'code']] = df[['code', 'date']].values
+    df=df[['code','name','vol_ratio','date','ts_code','trade_date_x','open_x','high_x','close_x']]
     print(df)
-    print("\n" + "_" * 80 + "\n")
-    '''
+    print("\n" + "_" *  80+ "\n")
+
 
     # 存储到SQLite数据库
     df_to_sqlite(

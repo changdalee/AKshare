@@ -1,12 +1,14 @@
-import akshare as ak
-import pandas as pd
 import sqlite3
 from sqlite3 import OperationalError
+from datetime import date, datetime, timedelta
+from chinese_calendar import is_workday, is_holiday
+import pandas as pd
 
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+
 
 def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     """
@@ -53,38 +55,69 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #对pandas配置，列名与数据对其显示
+    # 对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     # 显示所有列
     pd.set_option('display.max_columns', None)
     # 显示所有行
-    #pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
 
+    # 创建日期
+    start_date = datetime(2025, 1, 1)
+    num_days = 365
+    date_list = []
 
-    #查询所有股票的实时行情数据
-    stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
-    print(stock_zh_a_spot_em_df)
+    selected_cols = ['days']
+    df = pd.DataFrame(columns=selected_cols)
 
-    df = pd.DataFrame(stock_zh_a_spot_em_df)
-    df = df.fillna(0)  # 填充所有NaN为0
+
+    current_date = start_date
+    count = 0
+
+    while count < num_days:
+        if is_workday(current_date) and current_date.weekday() < 5:
+            date_list.append(current_date.strftime('%Y%m%d'))
+        current_date += timedelta(days=1)
+        count += 1
+
+    df['days'] = date_list
+
     #print(df)
-
-
-    # 方法1: 直接通过列名列表选择（最常用）
-    selected_cols = ['代码', '名称']
-    df1 = df[selected_cols]
-    df=df1.rename(columns={'代码': 'code', '名称': 'name'})
-    #df['code'] = df['code'].apply(lambda x: x[2:7])
-    print(df)
-    print("\n" + "&" * 99 + "\n")
 
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='stock_basic',
+        table_name='stock_days',
         db_name='akshare.db',
         if_exists='replace'
     )
+
+    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM stock_days")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
+    df = pd.DataFrame(rows,columns=['days'])
+
+    today = datetime.now().strftime("%Y%m%d")
+    next = df[(df['days'] > today)]
+    #print(next)
+    nextday=next.iloc[0]['days']
+    #print(nextday)
+
+    before=df[(df['days'] < today)]
+    #print(before)
+    before_day01=before.iloc[len(before)-1]['days']
+    #print(before_day01)
+    before_day02=before.iloc[len(before)-2]['days']
+    #print(before_day02)
+    before_day03=before.iloc[len(before)-3]['days']
+    #print(before_day03)
+    before_day04=before.iloc[len(before)-4]['days']
+    #print(before_day04)
+    before_day05=before.iloc[len(before)-5]['days']
+    #print(before_day05)
+

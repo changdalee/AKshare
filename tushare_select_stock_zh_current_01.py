@@ -4,8 +4,7 @@ import pandas as pd
 import numpy as np
 import sqlite3
 from sqlite3 import OperationalError
-import time
-from datetime import date, timedelta,datetime
+from datetime import date, time, timedelta,datetime
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -53,15 +52,6 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
-def get_daily(self, ts_code='', trade_date='', start_date='', end_date=''):
-    for _ in range(3):
-        if trade_date:
-            df = self.pro.daily(ts_code=ts_code, trade_date=trade_date)
-        else:
-            df = self.pro.daily(ts_code=ts_code, start_date=start_date, end_date=end_date)
-            time.sleep(1)
-
-
 
 if __name__ == '__main__':
     #对pandas配置，列名与数据对其显示
@@ -78,57 +68,63 @@ if __name__ == '__main__':
 
     print_hi('PyCharm')
 
-
-    today=datetime.now().strftime("%Y%m%d")
-    daybf1 = datetime.now() - timedelta(days=1)
-    daybefore1 = daybf1.strftime("%Y%m%d")
-    daybf2 = datetime.now() - timedelta(days=2)
-    daybefore2=daybf2.strftime("%Y%m%d")
-    daybf3 = datetime.now() - timedelta(days=3)
-    daybefore3=daybf3.strftime("%Y%m%d")
-    daybf4 = datetime.now() - timedelta(days=4)
-    daybefore4=daybf4.strftime("%Y%m%d")
-    daybf5 = datetime.now() - timedelta(days=5)
-    daybefore5=daybf5.strftime("%Y%m%d")
-
-    
-
-    pro = ts.pro_api()
-    df_today = pro.daily(trade_date=daybefore1).fillna(0)
-    df_yesterday = pro.daily(trade_date=daybefore2).fillna(0)
-    df=pd.merge(df_today, df_yesterday, on='ts_code', how='left')
-    #print(df)
-    #print("\n" + "_" * 99 + "\n")
-    '''
-    df['high_x']=np.where(df['vol_x']>2*df['vol_y'], '100', '0')
-    #df = df[df['open_x'] > 0]
-    df=df.drop(df[df['high_x'] == '0'].index)
-    '''
-    df['vol_ratio']=df['vol_x']/df['vol_y']
-    df = df.drop(df[df['vol_ratio'] < 2].index)
-    df = df[df['ts_code'].apply(lambda x: not str(x) > '688000.AA')]
-    df['code']=df['ts_code'].apply(lambda x: x[:6])
-
     conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_basic")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_days")  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    df_name = pd.DataFrame(rows, columns=['code', 'name'])
-    #print(df_name)
-    df=pd.merge(df, df_name, on='code', how='left')
-    df = df[df['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
+    df = pd.DataFrame(rows,columns=['days'])
+
+    today = datetime.now().strftime("%Y%m%d")
+    next = df[(df['days'] > today)]
+    #print(next)
+    nextday=next.iloc[0]['days']
+    #print(nextday)
+
+    prierday=df[(df['days'] < today)]
+    #print(before)
+    before_day01=prierday.iloc[len(prierday)-1]['days']
+
+    #查询所有股票的实时行情数据
+    stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
+    df_current = stock_zh_a_spot_em_df.fillna(0)
+    #print(df_current)
+
+    df_current = df_current[df_current['代码'].apply(lambda x: not str(x) > '687999')]
+    selected_cols = ['代码', '名称', '今开', '最新价', '量比', '换手率', '总市值', '流通市值', '成交量']
+    df_current= df_current[selected_cols]
+    df_current = df_current.rename(
+        columns={'代码': 'code', '名称': 'name', '今开': 'open', '最新价': 'current', '量比': 'vol_ratio',
+                 '换手率': 'tur_ratio', '总市值': 'total_capital', '流通市值': 'trade_capital',
+                 '成交量': 'trade_volume'})
+    df_current = df_current[df_current['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
                                        and '退' not in str(x) )]
 
-    df = df[df['code'].apply(lambda x: not str(x)>'687999')]
-    df=df[['code','name','trade_date_x','vol_x','close_x','vol_ratio']]
-    df = df.rename(columns={'code': 'code', 'name': 'name','trade_date_x':'trade_date', 'vol_x': 'vol', 'close_x': 'close','vol_ratio':'vol_ratio'})
-    print("\n" + "_" * 80 + "\n")
+    df_current= df_current[df_current['code'].apply(lambda x: not str(x)>'687999')]
+    df_current = df_current.drop(df_current[df_current['current'] < 2].index)
+
+    pro = ts.pro_api()
+    df_yesterday = pro.daily(trade_date=before_day01).fillna(0)
+    df_yesterday['code'] = df_yesterday['ts_code'].apply(lambda x: x[:6])
+    #print(df_yesterday)
+    df_yesterday = df_yesterday.drop(df_yesterday[df_yesterday['vol'] < 1].index)
+    df = pd.merge(df_current, df_yesterday, on='code', how='left')
+
+    print(df)
+    df['vol_ratio']=df['trade_volume']/df['vol']
+    df['vol_ratio'] = df['vol_ratio'].round(2)
+    df = df.drop(df[df['vol_ratio'] < 1.2].index)
+
+    df=df[['code','name','trade_date','current','vol_ratio','tur_ratio','trade_capital','trade_volume','vol']]
+    df = df.rename(columns={'code': 'code', 'name': 'name','trade_date':'trade_date', 'current': 'current',
+                            'vol_ratio':'vol_ratio','tur_ratio':'tur_ratio','trade_capital':'trade_capital',
+                            'trade_volume':'trade_volume','vol':'vol'})
+    #print("\n" + "%" * 80 + "\n")
     print(df)
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='tushare_select_stock_zh_a_01',
+        table_name='tushare_select_stock_zh_current_01',
         db_name='akshare.db',
         if_exists='replace'
     )

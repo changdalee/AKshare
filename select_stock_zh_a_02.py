@@ -103,21 +103,26 @@ if __name__ == '__main__':
     d30=pd.DataFrame(row30, columns=['code', 'name','open'])
 
 
-    today=datetime.now().strftime("%Y%m%d")
-    daybf1 = datetime.now() - timedelta(days=1)
-    daybefore1 = daybf1.strftime("%Y%m%d")
-    daybf2 = datetime.now() - timedelta(days=2)
-    daybefore2=daybf2.strftime("%Y%m%d")
-    daybf3 = datetime.now() - timedelta(days=3)
-    daybefore3=daybf3.strftime("%Y%m%d")
-    daybf4 = datetime.now() - timedelta(days=4)
-    daybefore4=daybf4.strftime("%Y%m%d")
-    daybf5 = datetime.now() - timedelta(days=5)
-    daybefore5=daybf5.strftime("%Y%m%d")
+    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM stock_days")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
+    df = pd.DataFrame(rows,columns=['days'])
+
+    today = datetime.now().strftime("%Y%m%d")
+    next = df[(df['days'] > today)]
+    #print(next)
+    nextday=next.iloc[0]['days']
+    #print(nextday)
+
+    before=df[(df['days'] < today)]
+    #print(before)
+    before_day01=before.iloc[len(before)-1]['days']
 
     conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM select_stock_zh_a_01_"+daybefore1)  # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM select_stock_zh_a_01")#+before_day01)  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows_daybf1 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     #print(rows_daybf1)
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}

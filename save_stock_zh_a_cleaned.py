@@ -84,7 +84,8 @@ if __name__ == '__main__':
     df = df[df['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
                                        and '退' not in str(x) )]
 
-    df = df[df['code'].apply(lambda x: not str(x)>'699999')]
+    df = df[df['code'].apply(lambda x: not str(x)>'687999')]
+    
     # lst=['ST','PT','退']
     #df = df[~df['name'].isin(lst)]
     print(df)

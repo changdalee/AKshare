@@ -69,9 +69,17 @@ if __name__ == '__main__':
     print(stock_zh_a_spot_em_df)
 
     df = pd.DataFrame(stock_zh_a_spot_em_df)
-    na_df = df.fillna(0)  # 填充所有NaN为0
-    print(na_df)
+    df = df.fillna(0)  # 填充所有NaN为0
+    print(df)
+    df = df[df['名称'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
+                                       and '退' not in str(x) )]
 
+    df = df[df['代码'].apply(lambda x: not str(x)>'687999')]
+    df = df[df['流通市值'].apply(lambda x: int(x) >100000000)]
+    df = df[df['成交量'] > 100000]
+    df = df[df['量比'] > 1.3]
+
+    '''
     # 只保留成交量大于100万股（1万手）的股票
     df = na_df[na_df['成交量'] > 100000]
     print(df)
@@ -81,10 +89,6 @@ if __name__ == '__main__':
     df1 = df[selected_cols]
     df=df1.rename(columns={'代码': 'code', '名称': 'name', '今开': 'open','最新价':'current','量比':'volume_ratio','换手率':'turnover_ratio','总市值':'total_capital','流通市值':'trade_capital','成交量':'trade_volume'})
 
-    df = df[df['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
-                                       and '退' not in str(x) )]
-
-    df = df[df['code'].apply(lambda x: not str(x)>'687999')]
     # lst=['ST','PT','退']
     #df = df[~df['name'].isin(lst)]
     print(df)
@@ -97,12 +101,12 @@ if __name__ == '__main__':
         db_name='akshare.db',
         if_exists='replace'
     )
-
+    '''
     today = datetime.now().strftime("%Y%m%d")
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='stock_trade_volume'+today,
+        table_name='akshare_stock_daily_'+today,
         db_name='akshare.db',
         if_exists='replace'
     )
