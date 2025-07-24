@@ -4,9 +4,11 @@ import sqlite3
 from sqlite3 import OperationalError
 import time
 from datetime import date, timedelta,datetime
-
+import sys
+import io
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')  # 强制标准输出UTF-8编码
     #对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
@@ -26,3 +28,6 @@ if __name__ == '__main__':
     print(df)
     print(df.empty)
     print(len(df))
+    print("Python默认编码:", sys.getdefaultencoding())  # 输出应为'utf-8'
+    
+    print("Python标准输出编码:", sys.stdout.encoding)  # 应为'utf-8'
