@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="20250717" />
+    <list default="true" id="14e9a758-a9ff-4216-9fb0-c0557cad85c6" name="Changes" comment="20250717">
+      <change beforePath="$PROJECT_DIR$/操作铁律.txt" beforeDir="false" afterPath="$PROJECT_DIR$/操作铁律.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,7 +107,7 @@
       <recent name="D:\develops\python\AKshare" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.ta_lib_test">
+  <component name="RunManager">
     <configuration name="create_database (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AKshare" />
       <option name="ENV_FILES" value="" />
@@ -245,11 +247,11 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.ta_lib_test" />
-      <item itemvalue="Python.create_database" />
       <item itemvalue="Python.create_database (1)" />
+      <item itemvalue="Python.create_database" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.open_database" />
+      <item itemvalue="Python.ta_lib_test" />
     </list>
     <recent_temporary>
       <list>
@@ -325,6 +327,7 @@
       <workItem from="1753265256625" duration="3383000" />
       <workItem from="1753272442288" duration="3918000" />
       <workItem from="1753336883013" duration="244000" />
+      <workItem from="1753495169946" duration="60000" />
     </task>
     <task id="LOCAL-00001" summary="20250717">
       <option name="closed" value="true" />

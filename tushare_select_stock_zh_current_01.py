@@ -117,8 +117,8 @@ if __name__ == '__main__':
     print(df)
     df['vol_ratio']=df['trade_volume']/df['vol']
     df['vol_ratio'] = df['vol_ratio'].round(2)
-    df = df.drop(df[df['vol_ratio'] < 1.2].index)
-
+    df = df.drop(df[df['vol_ratio'] < 1.1].index)
+    df = df.drop(df[df['vol_ratio'] > 1.5].index)
     df=df[['code','name','trade_date','current','vol_ratio','tur_ratio','trade_capital','trade_volume','vol']]
     df = df.rename(columns={'code': 'code', 'name': 'name','trade_date':'trade_date', 'current': 'current',
                             'vol_ratio':'vol_ratio','tur_ratio':'tur_ratio','trade_capital':'trade_capital',
