@@ -105,7 +105,7 @@ if __name__ == '__main__':
     df=df.drop(df[df['high_x'] == '0'].index)
     '''
     df['vol_ratio']=df['vol_x']/df['vol_y']
-    df['vol_ratio']=df['vol_ratio'].round(2)
+    #df['vol_ratio']=df['vol_ratio'].round(2)
     df = df.drop(df[df['vol_ratio'] < 1.1].index)
     df = df.drop(df[df['vol_ratio'] > 1.5].index)
     df = df[df['ts_code'].apply(lambda x: not str(x) > '687999.AA')]
