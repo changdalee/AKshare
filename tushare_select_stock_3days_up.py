@@ -69,14 +69,7 @@ def df_read_sqlite(df, table_name, db_name, today):
     try:
         # 连接到SQLite数据库（如果不存在则创建）
         conn = sqlite3.connect(db_name)
-        """
-        conn = sqlite3.connect(db_name)
-        c = conn.cursor()
-        print("数据库打开成功")
-        c.execute("DELETE from {table_name};")
-        conn.commit()
-        conn.close()
-        """
+
         # 将DataFrame写入SQLite表
         df = pd.read_sql_query(
             "SELECT * FROM " + table_name + " WHERE " + "days <= " + today,
