@@ -5,7 +5,7 @@ import pandas as pd
 # import numpy as np
 import sqlite3
 from sqlite3 import OperationalError
-from datetime import timedelta, datetime
+from datetime import datetime
 import io
 import sys
 
