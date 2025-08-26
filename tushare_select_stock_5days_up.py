@@ -77,16 +77,28 @@ if __name__ == "__main__":
     df_days = pd.DataFrame(rows, columns=["days"])
 
     daybefore1 = df_days["days"].iloc[-1]
-    daybefore2 = df_days["days"].iloc[-2]
-    daybefore3 = df_days["days"].iloc[-3]
-    daybefore4 = df_days["days"].iloc[-4]
-    daybefore5 = df_days["days"].iloc[-5]
+    if daybefore1 == today:
+        daybefore1 = df_days["days"].iloc[-2]
+        daybefore2 = df_days["days"].iloc[-3]
+        daybefore3 = df_days["days"].iloc[-4]
+        daybefore4 = df_days["days"].iloc[-5]
+        daybefore5 = df_days["days"].iloc[-6]
+    else:
+        daybefore2 = df_days["days"].iloc[-2]
+        daybefore3 = df_days["days"].iloc[-3]
+        daybefore4 = df_days["days"].iloc[-4]
+        daybefore5 = df_days["days"].iloc[-5]
+
     pro = ts.pro_api()
     df_daybf1 = pro.daily(trade_date=daybefore1).fillna(0)
-    time.sleep(5)
+    time.sleep(10)
     df_daybf2 = pro.daily(trade_date=daybefore2).fillna(0)
-    time.sleep(5)
+    time.sleep(10)
     df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
+    time.sleep(10)
+    df_daybf4 = pro.daily(trade_date=daybefore4).fillna(0)
+    time.sleep(10)
+    df_daybf5 = pro.daily(trade_date=daybefore5).fillna(0)
 
     df_bf1 = df_daybf1[["ts_code", "vol", "close"]]
     df_bf1.columns = ["ts_code", "vol_bf1", "close_bf1"]
@@ -94,9 +106,14 @@ if __name__ == "__main__":
     df_bf2.columns = ["ts_code", "vol_bf2", "close_bf2"]
     df_bf3 = df_daybf3[["ts_code", "vol", "close"]]
     df_bf3.columns = ["ts_code", "vol_bf3", "close_bf3"]
-
+    df_bf4 = df_daybf4[["ts_code", "vol", "close"]]
+    df_bf4.columns = ["ts_code", "vol_bf4", "close_bf4"]
+    df_bf5 = df_daybf5[["ts_code", "vol", "close"]]
+    df_bf5.columns = ["ts_code", "vol_bf5", "close_bf5"]
     df = pd.merge(df_bf1, df_bf2, on="ts_code", how="left")
     df = pd.merge(df, df_bf3, on="ts_code", how="left")
+    df = pd.merge(df, df_bf4, on="ts_code", how="left")
+    df = pd.merge(df, df_bf5, on="ts_code", how="left")
 
     # print(df)
     df.fillna(0, inplace=True)
@@ -106,18 +123,24 @@ if __name__ == "__main__":
     df = df.drop(df[df["vol_bf1"] < 1].index)
     df = df.drop(df[df["vol_bf2"] < 1].index)
     df = df.drop(df[df["vol_bf3"] < 1].index)
-
+    df = df.drop(df[df["vol_bf4"] < 1].index)
+    df = df.drop(df[df["vol_bf5"] < 1].index)
     df = df.drop(df[df["close_bf1"] < 1].index)
     df = df.drop(df[df["close_bf2"] < 1].index)
     df = df.drop(df[df["close_bf3"] < 1].index)
+    df = df.drop(df[df["close_bf4"] < 1].index)
+    df = df.drop(df[df["close_bf5"] < 1].index)
 
     # print(df)
 
     df = df.drop(df[df["vol_bf1"] < df["vol_bf2"]].index)
     df = df.drop(df[df["vol_bf2"] < df["vol_bf3"]].index)
-
+    df = df.drop(df[df["vol_bf3"] < df["vol_bf4"]].index)
+    df = df.drop(df[df["vol_bf4"] < df["vol_bf5"]].index)
     df = df.drop(df[df["close_bf1"] < df["close_bf2"]].index)
     df = df.drop(df[df["close_bf2"] < df["close_bf3"]].index)
+    df = df.drop(df[df["close_bf3"] < df["close_bf4"]].index)
+    df = df.drop(df[df["close_bf4"] < df["close_bf5"]].index)
 
     # print(df)
 
@@ -152,9 +175,13 @@ if __name__ == "__main__":
             "vol_bf1",
             "vol_bf2",
             "vol_bf3",
+            "vol_bf4",
+            "vol_bf5",
             "close_bf1",
             "close_bf2",
             "close_bf3",
+            "close_bf4",
+            "close_bf5",
         ]
     ]
 
@@ -165,9 +192,13 @@ if __name__ == "__main__":
             "vol_bf1": "vol_bf1",
             "vol_bf2": "vol_bf2",
             "vol_bf3": "vol_bf3",
+            "vol_bf4": "vol_bf4",
+            "vol_bf5": "vol_bf5",
             "close_bf1": "close_bf1",
             "close_bf2": "close_bf2",
             "close_bf3": "close_bf3",
+            "close_bf4": "close_bf4",
+            "close_bf5": "close_bf5",
         }
     )
     print("\n" + "$" * 80 + "\n")
@@ -175,7 +206,7 @@ if __name__ == "__main__":
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name="tushare_select_3days_up",
+        table_name="tushare_select_5days_up",
         db_name="akshare.db",
         if_exists="replace",
     )
