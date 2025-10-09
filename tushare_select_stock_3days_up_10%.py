@@ -1,4 +1,4 @@
-# import akshare as ak
+import akshare as ak
 import tushare as ts
 import pandas as pd
 import time
@@ -20,7 +20,7 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
     参数:
         df: 要存储的DataFrame
-        table_name: 要创建的表名pi
+        table_name: 要创建的表名
         db_name: SQLite数据库文件名，默认为'data.db'
         if_exists: 表存在时的处理方式，可选'replace'、'append'、'fail'
         index: 是否将DataFrame的索引作为一列存储
@@ -61,11 +61,21 @@ if __name__ == "__main__":
     token = "055680ead4592f1287876ef50197e46a76516c86268a33b8c0c565b0"
     ts.set_token(token)
     # print(ts.__version__)
+    pro = ts.pro_api()
 
     print_hi("PyCharm")
+    now_time = datetime.now().strftime("%H%M")
+    if now_time <= "1500":
+        today = datetime.now().strftime("%Y%m%d")
+        df_today = pd.DataFrame(ak.stock_zh_a_spot_em())
+        df_today = df_today[["代码", "最新价"]]
+        df_today.columns = ["ts_code", "close"]
+    else:
+        today = datetime.now().strftime("%Y%m%d")
+        df_today = pro.daily(trade_date=today).fillna(0)
+        df_today = df_today[["ts_code", "close"]]
+        df_today.columns = ["ts_code", "close"]
 
-    today = datetime.now().strftime("%Y%m%d")
-    print(today)
     conn = sqlite3.connect(
         "akshare.db"
     )  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
@@ -78,75 +88,33 @@ if __name__ == "__main__":
     df_days = pd.DataFrame(rows, columns=["days"])
 
     daybefore1 = df_days["days"].iloc[-1]
-    if daybefore1 == today:
-        daybefore1 = df_days["days"].iloc[-2]
-        daybefore2 = df_days["days"].iloc[-3]
-        daybefore3 = df_days["days"].iloc[-4]
-        daybefore4 = df_days["days"].iloc[-5]
-        daybefore5 = df_days["days"].iloc[-6]
-    else:
-        daybefore2 = df_days["days"].iloc[-2]
-        daybefore3 = df_days["days"].iloc[-3]
-        daybefore4 = df_days["days"].iloc[-4]
-        daybefore5 = df_days["days"].iloc[-5]
+    daybefore2 = df_days["days"].iloc[-2]
+    daybefore3 = df_days["days"].iloc[-3]
 
-    pro = ts.pro_api()
     df_daybf1 = pro.daily(trade_date=daybefore1).fillna(0)
-    time.sleep(10)
+    time.sleep(1)
     df_daybf2 = pro.daily(trade_date=daybefore2).fillna(0)
-    time.sleep(10)
+    time.sleep(1)
     df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
-    time.sleep(10)
-    df_daybf4 = pro.daily(trade_date=daybefore4).fillna(0)
-    time.sleep(10)
-    df_daybf5 = pro.daily(trade_date=daybefore5).fillna(0)
 
-    df_bf1 = df_daybf1[["ts_code", "vol", "close"]]
-    df_bf1.columns = ["ts_code", "vol_bf1", "close_bf1"]
-    df_bf2 = df_daybf2[["ts_code", "vol", "close"]]
-    df_bf2.columns = ["ts_code", "vol_bf2", "close_bf2"]
-    df_bf3 = df_daybf3[["ts_code", "vol", "close"]]
-    df_bf3.columns = ["ts_code", "vol_bf3", "close_bf3"]
-    df_bf4 = df_daybf4[["ts_code", "vol", "close"]]
-    df_bf4.columns = ["ts_code", "vol_bf4", "close_bf4"]
-    df_bf5 = df_daybf5[["ts_code", "vol", "close"]]
-    df_bf5.columns = ["ts_code", "vol_bf5", "close_bf5"]
-    df = pd.merge(df_bf1, df_bf2, on="ts_code", how="left")
+    df_bf1 = df_daybf1[["ts_code", "close"]]
+    df_bf1.columns = ["ts_code", "close_bf1"]
+    df_bf2 = df_daybf2[["ts_code", "close"]]
+    df_bf2.columns = ["ts_code", "close_bf2"]
+    df_bf3 = df_daybf3[["ts_code", "close"]]
+    df_bf3.columns = ["ts_code", "close_bf3"]
+
+    df = pd.merge(df_today, df_bf1, on="ts_code", how="left")
+    df = pd.merge(df, df_bf2, on="ts_code", how="left")
     df = pd.merge(df, df_bf3, on="ts_code", how="left")
-    df = pd.merge(df, df_bf4, on="ts_code", how="left")
-    df = pd.merge(df, df_bf5, on="ts_code", how="left")
-
-    # print(df)
-    df.fillna(0, inplace=True)
-    df = df[df["ts_code"].apply(lambda x: not str(x) > "687999.AA")]
-    df["code"] = df["ts_code"].apply(lambda x: x[:6])
-    # print(df)
-    df = df.drop(df[df["vol_bf1"] < 1].index)
-    df = df.drop(df[df["vol_bf2"] < 1].index)
-    df = df.drop(df[df["vol_bf3"] < 1].index)
-    df = df.drop(df[df["vol_bf4"] < 1].index)
-    df = df.drop(df[df["vol_bf5"] < 1].index)
-    df = df.drop(df[df["close_bf1"] < 1].index)
-    df = df.drop(df[df["close_bf2"] < 1].index)
-    df = df.drop(df[df["close_bf3"] < 1].index)
-    df = df.drop(df[df["close_bf4"] < 1].index)
-    df = df.drop(df[df["close_bf5"] < 1].index)
-
-    # print(df)
-
-    df = df.drop(df[df["vol_bf1"] < df["vol_bf2"]].index)
-    df = df.drop(df[df["vol_bf2"] < df["vol_bf3"]].index)
-    df = df.drop(df[df["vol_bf3"] < df["vol_bf4"]].index)
-    df = df.drop(df[df["vol_bf4"] < df["vol_bf5"]].index)
-    df = df.drop(df[df["close_bf1"] < df["close_bf2"]].index)
-    df = df.drop(df[df["close_bf2"] < df["close_bf3"]].index)
-    df = df.drop(df[df["close_bf3"] < df["close_bf4"]].index)
-    df = df.drop(df[df["close_bf4"] < df["close_bf5"]].index)
-
-    # print(df)
-
+    df["up_10%"] = (df["close"] - df["close_bf3"]) / df["close_bf3"] * 100
+    df = df[df["up_10%"] > 10]
+    df["up_10%"] = df["up_10%"].map("{:,.2f}".format)
+    df["code"] = df["ts_code"].str[:6]
+    df = df[df["code"] < "688000"]
+    print(df)
     print("\n" + "_" * 99 + "\n")
-
+    # exit(1)
     conn = sqlite3.connect(
         "akshare.db"
     )  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
@@ -167,39 +135,32 @@ if __name__ == "__main__":
             and "退" not in str(x)
         )
     ]
+
     # print(df)
 
     df = df[
         [
-            "code",
-            "name",
-            "vol_bf1",
-            "vol_bf2",
-            "vol_bf3",
-            "vol_bf4",
-            "vol_bf5",
+            "ts_code",
+            "close",
             "close_bf1",
             "close_bf2",
             "close_bf3",
-            "close_bf4",
-            "close_bf5",
+            "up_10%",
+            "code",
+            "name",
         ]
     ]
 
     df = df.rename(
         columns={
-            "code": "code",
-            "name": "name",
-            "vol_bf1": "vol_bf1",
-            "vol_bf2": "vol_bf2",
-            "vol_bf3": "vol_bf3",
-            "vol_bf4": "vol_bf4",
-            "vol_bf5": "vol_bf5",
+            "ts_code": "ts_code",
+            "close": "close",
             "close_bf1": "close_bf1",
             "close_bf2": "close_bf2",
             "close_bf3": "close_bf3",
-            "close_bf4": "close_bf4",
-            "close_bf5": "close_bf5",
+            "up_10%": "up_10%",
+            "code": "code",
+            "name": "name",
         }
     )
     print("\n" + "$" * 80 + "\n")
@@ -207,7 +168,7 @@ if __name__ == "__main__":
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name="tushare_select_5days_up",
+        table_name="tushare_select_3days_up_10%",
         db_name="akshare.db",
         if_exists="replace",
     )
