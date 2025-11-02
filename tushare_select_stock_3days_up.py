@@ -88,12 +88,12 @@ if __name__ == "__main__":
     time.sleep(5)
     df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
 
-    df_bf1 = df_daybf1[["ts_code", "vol", "close"]]
-    df_bf1.columns = ["ts_code", "vol_bf1", "close_bf1"]
-    df_bf2 = df_daybf2[["ts_code", "vol", "close"]]
-    df_bf2.columns = ["ts_code", "vol_bf2", "close_bf2"]
-    df_bf3 = df_daybf3[["ts_code", "vol", "close"]]
-    df_bf3.columns = ["ts_code", "vol_bf3", "close_bf3"]
+    df_bf1 = df_daybf1[["ts_code", "vol","open", "close"]]
+    df_bf1.columns = ["ts_code", "vol_bf1", "open_bf1","close_bf1"]
+    df_bf2 = df_daybf2[["ts_code", "vol", "open","close"]]
+    df_bf2.columns = ["ts_code", "vol_bf2", "open_bf2","close_bf2"]
+    df_bf3 = df_daybf3[["ts_code", "vol", "open","close"]]
+    df_bf3.columns = ["ts_code", "vol_bf3","open_bf3", "close_bf3"]
 
     df = pd.merge(df_bf1, df_bf2, on="ts_code", how="left")
     df = pd.merge(df, df_bf3, on="ts_code", how="left")
@@ -106,6 +106,10 @@ if __name__ == "__main__":
     df = df.drop(df[df["vol_bf1"] < 1].index)
     df = df.drop(df[df["vol_bf2"] < 1].index)
     df = df.drop(df[df["vol_bf3"] < 1].index)
+
+    df = df.drop(df[df["open_bf1"] >df["close_bf1"] ].index)
+    df = df.drop(df[df["open_bf2"] > df["close_bf2"]].index)
+    df = df.drop(df[df["open_bf3"] > df["close_bf3"]].index)
 
     df = df.drop(df[df["close_bf1"] < 1].index)
     df = df.drop(df[df["close_bf2"] < 1].index)
