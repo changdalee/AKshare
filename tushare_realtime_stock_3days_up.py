@@ -1,4 +1,4 @@
-# import akshare as ak
+import akshare as ak
 import tushare as ts
 import pandas as pd
 import time
@@ -61,32 +61,56 @@ if __name__ == "__main__":
     token = "055680ead4592f1287876ef50197e46a76516c86268a33b8c0c565b0"
     ts.set_token(token)
     # print(ts.__version__)
-
     print_hi("PyCharm")
 
+    current_hour = datetime.now().hour
     today = datetime.now().strftime("%Y%m%d")
+    print(f"today=",today)
+    print("current_hour=",current_hour)
     conn = sqlite3.connect(
         "akshare.db"
     )  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT * FROM stock_days where days <=" + today
+        "SELECT * FROM stock_days where days <" + today
     )  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     df_days = pd.DataFrame(rows, columns=["days"])
 
     daybefore1 = df_days["days"].iloc[-1]
+    print(f"daybefore1=",daybefore1)
     daybefore2 = df_days["days"].iloc[-2]
     daybefore3 = df_days["days"].iloc[-3]
     daybefore4 = df_days["days"].iloc[-4]
     daybefore5 = df_days["days"].iloc[-5]
     pro = ts.pro_api()
-    df_daybf1 = pro.daily(trade_date=daybefore1).fillna(0)
-    time.sleep(5)
-    df_daybf2 = pro.daily(trade_date=daybefore2).fillna(0)
-    time.sleep(5)
-    df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
+    if current_hour >= 15:
+        df_daybf1 = pro.daily(trade_date=today).fillna(0)
+        print(current_hour)
+        print(df_daybf1)
+    elif current_hour < 15 and current_hour > 9:
+        df_daybf1 = ak.stock_zh_a_spot_em()
+        print(current_hour)
+        print(df_daybf1)
+    else:
+        df_daybf1 = pro.daily(trade_date=daybefore1).fillna(0)
+
+    time.sleep(3)
+    if current_hour >= 15:
+        df_daybf2= pro.daily(trade_date=daybefore1).fillna(0)
+    elif current_hour < 15 and current_hour > 9:
+        df_daybf2 = pro.daily(trade_date=daybefore1).fillna(0)
+    else:
+        df_daybf2 = pro.daily(trade_date=daybefore2).fillna(0)
+
+    time.sleep(3)
+    if current_hour >= 15:
+        df_daybf3 = pro.daily(trade_date=daybefore2).fillna(0)
+    elif current_hour < 15 and current_hour > 9:
+        df_daybf3 = pro.daily(trade_date=daybefore2).fillna(0)
+    else:
+        df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
 
     df_bf1 = df_daybf1[["ts_code", "vol","open", "close"]]
     df_bf1.columns = ["ts_code", "vol_bf1", "open_bf1","close_bf1"]
@@ -98,9 +122,11 @@ if __name__ == "__main__":
     df = pd.merge(df_bf1, df_bf2, on="ts_code", how="left")
     df = pd.merge(df, df_bf3, on="ts_code", how="left")
 
-    # print(df)
+    print(df)
     df.fillna(0, inplace=True)
     df = df[df["ts_code"].apply(lambda x: not str(x) > "687999.AA")]
+    print("\n" + "_" * 99 + "\n")
+    print(df)
     df["code"] = df["ts_code"].apply(lambda x: x[:6])
     # print(df)
     df = df.drop(df[df["vol_bf1"] < 1].index)
