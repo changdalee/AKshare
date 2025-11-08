@@ -28,7 +28,7 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     try:
         # 连接到SQLite数据库（如果不存在则创建）
         conn = sqlite3.connect(db_name)
-        # 将DataFrame写入SQLite表
+        # 将DataFrame写入SQLite表+
         df.to_sql(name=table_name, con=conn, if_exists=if_exists, index=index)
 
         # 提交事务并关闭连接
