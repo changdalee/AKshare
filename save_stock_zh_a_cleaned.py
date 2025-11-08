@@ -67,7 +67,8 @@ if __name__ == '__main__':
     #查询所有股票的实时行情数据
     stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
     print(stock_zh_a_spot_em_df)
-
+    
+    """
     df = pd.DataFrame(stock_zh_a_spot_em_df)
     na_df = df.fillna(0)  # 填充所有NaN为0
     print(na_df)
@@ -75,11 +76,13 @@ if __name__ == '__main__':
     # 只保留成交量大于100万股（1万手）的股票
     df = na_df[na_df['成交量'] > 100000]
     print(df)
+
+
     print_hi('PyCharm')
     # 方法1: 直接通过列名列表选择（最常用）
-    selected_cols = ['代码', '名称', '今开','最新价','量比','换手率','总市值','流通市值','成交量']
+    selected_cols = ['代码', '名称', '今开','最新价','量比','换手率','市盈率-动态','市净率','总市值','流通市值','成交量']
     df1 = df[selected_cols]
-    df=df1.rename(columns={'代码': 'code', '名称': 'name', '今开': 'open','最新价':'current','量比':'volume_ratio','换手率':'turnover_ratio','总市值':'total_capital','流通市值':'trade_capital','成交量':'trade_volume'})
+    df=df1.rename(columns={'代码': 'code', '名称': 'name', '今开': 'open','最新价':'current','量比':'volume_ratio','换手率':'turnover_ratio','市盈率-动态':'PE_ratio','市净率':'PB_ratio','总市值':'total_capital','流通市值':'trade_capital','成交量':'trade_volume'})
 
     df = df[df['name'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
                                        and '退' not in str(x) )]
@@ -99,11 +102,14 @@ if __name__ == '__main__':
         if_exists='replace'
     )
 
+    """
+'''
     today = datetime.now().strftime("%Y%m%d")
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='stock_trade_volume'+today,
+        table_name='stock_PB_PE'+today,
         db_name='akshare.db',
         if_exists='replace'
     )
+    '''
