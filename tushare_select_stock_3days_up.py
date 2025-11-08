@@ -7,7 +7,7 @@ from sqlite3 import OperationalError
 from datetime import datetime
 import io
 import sys
-
+import os
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -45,6 +45,25 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
+def export_to_ths_txt(df, group_name='myselect_stocks'):
+
+    """导出为同花顺TXT格式"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{group_name}_{timestamp}.txt"
+    #current_path = os.getcwd()
+    current_path = "D:\\"
+    filepath = os.path.join(current_path, filename)
+    print(f"正在导出文件到: {filepath}...")
+    formatted_codes = df["code"]
+
+    # 同花顺标准格式：每行一个6位股票代码
+    with open(filepath, 'w', encoding='gbk') as f:  # 重要：使用GBK编码
+        f.write('代码    \n')
+        for code in formatted_codes:
+            f.write(code + '    \n')
+
+    print(f"✅ 成功导出 {len(formatted_codes)} 只股票到: {filepath}")
+    return filepath
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(
@@ -183,3 +202,5 @@ if __name__ == "__main__":
         db_name="akshare.db",
         if_exists="replace",
     )
+    export_to_ths_txt(df)
+    

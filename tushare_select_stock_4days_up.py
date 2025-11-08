@@ -47,7 +47,7 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         return False
 
 
-def export_to_ths_txt(df , group_name='myselect_stocks'):
+def export_to_ths_txt(df, group_name='myselect_stocks'):
 
     """导出为同花顺TXT格式"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -239,3 +239,4 @@ if __name__ == "__main__":
         if_exists="replace",
     )
     export_to_ths_txt(df)
+    
