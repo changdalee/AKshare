@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     #### 获取历史K线数据 ####
     # 详细指标参数，参见“历史行情指标参数”章节
-    rs = bs.query_history_k_data_plus("sh.600000",
+    rs = bs.query_history_k_data_plus("sz.301265",
         "date,code,close,peTTM,isST",
         start_date='2025-11-07', end_date='2025-11-07',
         frequency="d", adjustflag="3") #frequency="d"取日k线，adjustflag="3"默认不复权

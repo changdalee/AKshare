@@ -1,12 +1,15 @@
-import akshare as ak
-import pandas as pd
+import io
 import sqlite3
+import sys
 from sqlite3 import OperationalError
+
+import pandas as pd
 
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+
 
 def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     """
@@ -29,12 +32,7 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         conn.commit()
         '''
         # 将DataFrame写入SQLite表
-        df.to_sql(
-            name=table_name,
-            con=conn,
-            if_exists=if_exists,
-            index=index
-        )
+        df.to_sql(name=table_name, con=conn, if_exists=if_exists, index=index)
 
         # 提交事务并关闭连接
         conn.commit()
@@ -53,38 +51,51 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #对pandas配置，列名与数据对其显示
-    pd.set_option('display.unicode.ambiguous_as_wide', True)
-    pd.set_option('display.unicode.east_asian_width', True)
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf8")  # 强制标准输出UTF-8编码
+    # 对pandas配置，列名与数据对其显示
+    pd.set_option("display.unicode.ambiguous_as_wide", True)
+    pd.set_option("display.unicode.east_asian_width", True)
     # 显示所有列
-    pd.set_option('display.max_columns', None)
+    pd.set_option("display.max_columns", None)
     # 显示所有行
-    #pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
 
+    conn = sqlite3.connect("akshare.db")  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM stock_basic")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
+    df = pd.DataFrame(rows, columns=["code", "name"])
+    # print(df_basic)
+    df[]
 
-    #查询所有股票的实时行情数据
-    stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
-    print(stock_zh_a_spot_em_df)
-
-    df = pd.DataFrame(stock_zh_a_spot_em_df)
-    df = df.fillna(0)  # 填充所有NaN为0
-    #print(df)
-
-
+"""
     # 方法1: 直接通过列名列表选择（最常用）
-    selected_cols = ['代码', '名称','ak_code','tu_code','bao_code']
-    df1 = df[selected_cols]
-    df=df1.rename(columns={'代码': 'code', '名称': 'name','ak_code':'ak_code','tu_code':'tu_code','bao_code':'bao_code'})
-    #df['code'] = df['code'].apply(lambda x: x[2:7])
-    print(df)
+    df = pd.DataFrame(columns=['code', 'name', 'ak_code', 'tu_code', 'bao_code'])
+    for index, row in df_basic.iterrows():
+        code = row['code']
+        name = row['name']
+        # print(code, name)
+        if int(code) > 0 and int(code) < 300000:
+            ak_code = code
+            tu_code = code + '.SZ'
+            bao_code = 'SZ.' + code
+        elif int(code) > 300000 and int(code) < 600000:
+            ak_code = code
+            tu_code = code + '.SZ'
+            bao_code = 'SZ.' + code
+        else:
+            ak_code = code
+            tu_code = code + '.SH'
+            bao_code = 'SH.' + code
+        new_row = pd.DataFrame({code:[code], name:[name], ak_code:[ak_code], tu_code:[tu_code], bao_code:[bao_code]})
+        df = pd.concat([df, new_row], ignore_index=True)
+"""
     print("\n" + "&" * 99 + "\n")
+    df = pd.DataFrame(df, columns=["code", "name", "ak_code", "tu_code", "bao_code"])
+    print(df)
 
     # 存储到SQLite数据库
-    df_to_sqlite(
-        df=df,
-        table_name='stock_basic',
-        db_name='akshare.db',
-        if_exists='replace'
-    )
+    df_to_sqlite(df=df, table_name='stock_basic_plus', db_name='akshare.db', if_exists='replace')
