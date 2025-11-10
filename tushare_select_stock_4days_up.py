@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     today = datetime.now().strftime("%Y%m%d")
     conn = sqlite3.connect(
-        "akshare.db"
+        "aktushare.db"
     )  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
     cursor.execute(
@@ -229,13 +229,15 @@ if __name__ == "__main__":
             "close_bf4": "close_bf4",
         }
     )
+    df['PE_ratio']=
+    df['date'] = today
     print("\n" + "$" * 80 + "\n")
     print(df)
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
         table_name="tushare_select_4days_up",
-        db_name="akshare.db",
+        db_name="aktushare.db",
         if_exists="replace",
     )
     export_to_ths_txt(df)

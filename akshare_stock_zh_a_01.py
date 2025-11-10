@@ -1,5 +1,3 @@
-import datetime
-
 import akshare as ak
 import pandas as pd
 import sqlite3
@@ -87,13 +85,14 @@ if __name__ == '__main__':
                                        and '退' not in str(x) and not str(x).startswith('688'))]
     '''
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('aktushare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM stock_zh_a_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     df = pd.DataFrame(rows,columns=['code','name', 'open', 'current','volume_ratio','turnover_ratio','total_capital','trade_capital','trade_volume'])
     today=datetime.now().strftime("%Y%m%d")
+    print(today)
     for row in rows:
         code = row[0]
         name = row[1]
@@ -104,24 +103,24 @@ if __name__ == '__main__':
         tol= row[6]  #总股本
         tra= row[7]  #流通股票元
         trv= row[8]  #成交量
-
         if ope >1.0 and ((cur-ope)/ope) >0.02 and ((cur-ope)/ope) < 0.05 and vol>3.0 and tur>5 and tur<10 and tra>5000000000 and tra<20000000000:
             new_row = {'code':code,'name':name,'open':ope,'current':cur,'volume_ratio':vol,'turnover_ratio':tur,'total_capital':tol,'trade_capital':tra,'trade_volume':trv,'date':today}
             df=pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
     print("\n" + "_" * 80 + "\n")
+    df['date'] = today
     print(df)
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
         table_name='select_stock_zh_a_01_'+ today,
-        db_name='akshare.db',
+        db_name='aktushare.db',
         if_exists='replace'
     )
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
         table_name='select_stock_zh_a_01',
-        db_name='akshare.db',
+        db_name='aktushare.db',
         if_exists='replace'
     )

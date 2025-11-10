@@ -2,8 +2,9 @@ import io
 import sqlite3
 import sys
 from sqlite3 import OperationalError
-
+import numpy as np
 import pandas as pd
+from datetime import datetime
 
 
 def print_hi(name):
@@ -48,7 +49,6 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf8")  # 强制标准输出UTF-8编码
@@ -61,41 +61,22 @@ if __name__ == '__main__':
     # pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
-
-    conn = sqlite3.connect("akshare.db")  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    db_path = r'D:\develops\python\aktushare.db'
+    conn = sqlite3.connect(db_path)  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM stock_basic")  # 执行查询:ml-citation{ref="10" data="citationList"}
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     df = pd.DataFrame(rows, columns=["code", "name"])
-    # print(df_basic)
-    df[]
+    df['ak_code'] = df['code']
+    df['tu_code'] = np.where((df['code'] >= '600000'), (df['code'] + '.SH'), (df['code'] + '.SZ'))
+    df['bao_code'] = np.where(df['code'] >= '600000', 'sh.' + df['code'], 'sz.' + df['code'])
 
-"""
-    # 方法1: 直接通过列名列表选择（最常用）
-    df = pd.DataFrame(columns=['code', 'name', 'ak_code', 'tu_code', 'bao_code'])
-    for index, row in df_basic.iterrows():
-        code = row['code']
-        name = row['name']
-        # print(code, name)
-        if int(code) > 0 and int(code) < 300000:
-            ak_code = code
-            tu_code = code + '.SZ'
-            bao_code = 'SZ.' + code
-        elif int(code) > 300000 and int(code) < 600000:
-            ak_code = code
-            tu_code = code + '.SZ'
-            bao_code = 'SZ.' + code
-        else:
-            ak_code = code
-            tu_code = code + '.SH'
-            bao_code = 'SH.' + code
-        new_row = pd.DataFrame({code:[code], name:[name], ak_code:[ak_code], tu_code:[tu_code], bao_code:[bao_code]})
-        df = pd.concat([df, new_row], ignore_index=True)
-"""
     print("\n" + "&" * 99 + "\n")
     df = pd.DataFrame(df, columns=["code", "name", "ak_code", "tu_code", "bao_code"])
+    today = datetime.now().strftime("%Y%m%d")
+    df['date']=today
     print(df)
 
     # 存储到SQLite数据库
-    df_to_sqlite(df=df, table_name='stock_basic_plus', db_name='akshare.db', if_exists='replace')
+    df_to_sqlite(df=df, table_name='stock_basic_plus', db_name=db_path, if_exists='replace')

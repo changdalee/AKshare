@@ -71,6 +71,25 @@ if __name__ == '__main__':
     df = pd.DataFrame(stock_zh_a_spot_em_df)
     df = df.fillna(0)  # 填充所有NaN为0
     print(df)
+
+    # 存储到SQLite数据库
+    df_to_sqlite(
+        df=df,
+        table_name='stock_zh_a_cleaned',
+        db_name='aktushare.db',
+        if_exists='replace'
+    )
+   
+    today = datetime.now().strftime("%Y%m%d")
+    # 存储到SQLite数据库
+    df_to_sqlite(
+        df=df,
+        table_name='akshare_stock_daily_'+today,
+        db_name='aktushare.db',
+        if_exists='replace'
+    )
+
+'''
     df = df[df['名称'].apply(lambda x: 'ST' not in str(x) and '*ST' not in str(x) and 'PT' not in str(x)
                                        and '退' not in str(x) )]
 
@@ -79,7 +98,7 @@ if __name__ == '__main__':
     df = df[df['成交量'] > 100000]
     df = df[df['量比'] > 1.3]
 
-    '''
+ 
     # 只保留成交量大于100万股（1万手）的股票
     df = na_df[na_df['成交量'] > 100000]
     print(df)
@@ -93,20 +112,4 @@ if __name__ == '__main__':
     #df = df[~df['name'].isin(lst)]
     print(df)
     print("\n" + "&" * 80 + "\n")
-
-    # 存储到SQLite数据库
-    df_to_sqlite(
-        df=df,
-        table_name='stock_zh_a_cleaned',
-        db_name='akshare.db',
-        if_exists='replace'
-    )
-    '''
-    today = datetime.now().strftime("%Y%m%d")
-    # 存储到SQLite数据库
-    df_to_sqlite(
-        df=df,
-        table_name='akshare_stock_daily_'+today,
-        db_name='akshare.db',
-        if_exists='replace'
-    )
+ '''
