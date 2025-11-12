@@ -1,4 +1,4 @@
-#import akshare as ak
+# import akshare as ak
 import tushare as ts
 import pandas as pd
 import time
@@ -48,11 +48,10 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 
 def export_to_ths_txt(df, group_name='myselect_stocks'):
-
     """导出为同花顺TXT格式"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{group_name}_{timestamp}.txt"
-    #current_path = os.getcwd()
+    # current_path = os.getcwd()
     current_path = "D:\\"
     filepath = os.path.join(current_path, filename)
     print(f"正在导出文件到: {filepath}...")
@@ -66,7 +65,6 @@ def export_to_ths_txt(df, group_name='myselect_stocks'):
 
     print(f"✅ 成功导出 {len(formatted_codes)} 只股票到: {filepath}")
     return filepath
-
 
 
 if __name__ == "__main__":
@@ -229,7 +227,7 @@ if __name__ == "__main__":
             "close_bf4": "close_bf4",
         }
     )
-    df['PE_ratio']=
+    df['PE_ratio'] =
     df['date'] = today
     print("\n" + "$" * 80 + "\n")
     print(df)
@@ -241,4 +239,3 @@ if __name__ == "__main__":
         if_exists="replace",
     )
     export_to_ths_txt(df)
-    

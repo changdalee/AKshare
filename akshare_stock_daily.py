@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3
 from sqlite3 import OperationalError
 from datetime import datetime
+import time
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -63,11 +64,11 @@ if __name__ == '__main__':
 
     print_hi('PyCharm')
 
-
+    db_path = r'D:\develops\python\aktushare.db'
     #查询所有股票的实时行情数据
     stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
     print(stock_zh_a_spot_em_df)
-
+    time.sleep(5)
     df = pd.DataFrame(stock_zh_a_spot_em_df)
     df = df.fillna(0)  # 填充所有NaN为0
     print(df)
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     df_to_sqlite(
         df=df,
         table_name='stock_zh_a_cleaned',
-        db_name='aktushare.db',
+        db_name=db_path,
         if_exists='replace'
     )
    
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     df_to_sqlite(
         df=df,
         table_name='akshare_stock_daily_'+today,
-        db_name='aktushare.db',
+        db_name=db_path,
         if_exists='replace'
     )
 

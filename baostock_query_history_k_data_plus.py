@@ -3,6 +3,7 @@ import sqlite3
 import sys
 from datetime import datetime
 from sqlite3 import OperationalError
+
 import baostock as bs
 import pandas as pd
 
@@ -76,41 +77,35 @@ if __name__ == "__main__":
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     df = pd.DataFrame(rows, columns=["code", "name", "ak_code", "tu_code", "bao_code"])
     df["peTTM"] = 0
-    select_day=daybefore1[0:4]+"-"+daybefore1[4:6]+"-"+daybefore1[6:8]
+    select_day = daybefore1[0:4] + "-" + daybefore1[4:6] + "-" + daybefore1[6:8]
     df["date"] = select_day
     print(select_day)
     #### 获取历史K线数据 ####
     # 详细指标参数，参见“历史行情指标参数”章节
     data_list = []
     print("\n使用 itertuples() 遍历:")
-    #for row in df.itertuples():
-        #print(f"code: {row.code}, name: {row.name}, ak_code: {row.ak_code}, tu_code: {row.tu_code}, bao_code: {row.bao_code}")
-        rs = bs.query_history_k_data_plus(code=df["bao_code"],fields="peTTM", start_date=select_day,
-                                          end_date=select_day, frequency="d",
-                                          adjustflag="3")  # frequency="d"取日k线，adjustflag="3"默认不复权
-        #print('query_history_k_data_plus respond error_code:' + rs.error_code)
-        #print('query_history_k_data_plus respond  error_msg:' + rs.error_msg)
-        #print(rs)
-        print(rs.get_data())
-        rows = rs.get_row_data()
-        if len(rows) > 0:
-            df.loc[df["code"] == row.code, "peTTM"] = rows[0]
-        #### 打印结果集 ####
-        """
-        while (rs.error_code == '0') & rs.next():
-            # 获取一条记录，将记录合并在一起
-            data_list.append(rs.get_row_data())
-            print(rs.get_row_data())
-        """
-    #print(data_list)
-    df_output = pd.DataFrame(data_list, columns=rs.fields)
-    #### 结果集输出到csv文件 ####
-    df_to_sqlite(
-        df=df_output,
-        table_name="stock_basic_peTTM",
-        db_name="aktushare.db",
-        if_exists="replace",
-    )
+    # for row in df.itertuples():
+    # print(f"code: {row.code}, name: {row.name}, ak_code: {row.ak_code}, tu_code: {row.tu_code}, bao_code: {row.bao_code}")
+    rs = bs.query_history_k_data_plus(code=df["bao_code"], fields="peTTM", start_date=select_day, end_date=select_day,
+                                      frequency="d", adjustflag="3")  # frequency="d"取日k线，adjustflag="3"默认不复权
+    # print('query_history_k_data_plus respond error_code:' + rs.error_code)
+    # print('query_history_k_data_plus respond  error_msg:' + rs.error_msg)
+    # print(rs)
+    print(rs.get_data())
+    rows = rs.get_row_data()
+    if len(rows) > 0:
+        df.loc[df["code"] == row.code, "peTTM"] = rows[0]
+    #### 打印结果集 ####
+    """
+    while (rs.error_code == '0') & rs.next():
+        # 获取一条记录，将记录合并在一起
+        data_list.append(rs.get_row_data())
+        print(rs.get_row_data())
+    """
+# print(data_list)
+df_output = pd.DataFrame(data_list, columns=rs.fields)
+#### 结果集输出到csv文件 ####
+df_to_sqlite(df=df_output, table_name="stock_basic_peTTM", db_name="aktushare.db", if_exists="replace", )
 
-    #### 登出系统 ####
-    bs.logout()
+#### 登出系统 ####
+bs.logout()
