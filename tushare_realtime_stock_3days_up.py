@@ -65,8 +65,8 @@ if __name__ == "__main__":
 
     current_hour = datetime.now().hour
     today = datetime.now().strftime("%Y%m%d")
-    print(f"today=",today)
-    print("current_hour=",current_hour)
+    print(f"today=", today)
+    print("current_hour=", current_hour)
     conn = sqlite3.connect(
         "akshare.db"
     )  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     df_days = pd.DataFrame(rows, columns=["days"])
 
     daybefore1 = df_days["days"].iloc[-1]
-    print(f"daybefore1=",daybefore1)
+    print(f"daybefore1=", daybefore1)
     daybefore2 = df_days["days"].iloc[-2]
     daybefore3 = df_days["days"].iloc[-3]
     daybefore4 = df_days["days"].iloc[-4]
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     time.sleep(3)
     if current_hour >= 15:
-        df_daybf2= pro.daily(trade_date=daybefore1).fillna(0)
+        df_daybf2 = pro.daily(trade_date=daybefore1).fillna(0)
     elif current_hour < 15 and current_hour > 9:
         df_daybf2 = pro.daily(trade_date=daybefore1).fillna(0)
     else:
@@ -112,12 +112,12 @@ if __name__ == "__main__":
     else:
         df_daybf3 = pro.daily(trade_date=daybefore3).fillna(0)
 
-    df_bf1 = df_daybf1[["ts_code", "vol","open", "close"]]
-    df_bf1.columns = ["ts_code", "vol_bf1", "open_bf1","close_bf1"]
-    df_bf2 = df_daybf2[["ts_code", "vol", "open","close"]]
-    df_bf2.columns = ["ts_code", "vol_bf2", "open_bf2","close_bf2"]
-    df_bf3 = df_daybf3[["ts_code", "vol", "open","close"]]
-    df_bf3.columns = ["ts_code", "vol_bf3","open_bf3", "close_bf3"]
+    df_bf1 = df_daybf1[["ts_code", "vol", "open", "close"]]
+    df_bf1.columns = ["ts_code", "vol_bf1", "open_bf1", "close_bf1"]
+    df_bf2 = df_daybf2[["ts_code", "vol", "open", "close"]]
+    df_bf2.columns = ["ts_code", "vol_bf2", "open_bf2", "close_bf2"]
+    df_bf3 = df_daybf3[["ts_code", "vol", "open", "close"]]
+    df_bf3.columns = ["ts_code", "vol_bf3", "open_bf3", "close_bf3"]
 
     df = pd.merge(df_bf1, df_bf2, on="ts_code", how="left")
     df = pd.merge(df, df_bf3, on="ts_code", how="left")
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     df = df.drop(df[df["vol_bf2"] < 1].index)
     df = df.drop(df[df["vol_bf3"] < 1].index)
 
-    df = df.drop(df[df["open_bf1"] >df["close_bf1"] ].index)
+    df = df.drop(df[df["open_bf1"] > df["close_bf1"]].index)
     df = df.drop(df[df["open_bf2"] > df["close_bf2"]].index)
     df = df.drop(df[df["open_bf3"] > df["close_bf3"]].index)
 
