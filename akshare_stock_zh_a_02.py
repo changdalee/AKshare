@@ -4,11 +4,13 @@ import akshare as ak
 import pandas as pd
 import sqlite3
 from sqlite3 import OperationalError
-from datetime import date, timedelta,datetime
+from datetime import date, timedelta, datetime
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+
 
 def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     """
@@ -55,94 +57,112 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #对pandas配置，列名与数据对其显示
+    # 对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     # 显示所有列
     pd.set_option('display.max_columns', None)
     # 显示所有行
-    #pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM select_stock_zh_a_01")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM select_stock_zh_a_01")
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     dt = pd.DataFrame(rows,
-        columns=['code', 'name', 'open', 'current', 'volume_ratio', 'turnover_ratio', 'total_capital', 'trade_capital',
-                 'trade_volume', 'date'])
+                      columns=['code', 'name', 'open', 'current', 'volume_ratio', 'turnover_ratio', 'total_capital', 'trade_capital',
+                               'trade_volume', 'date'])
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_rank_xstp5_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_rank_xstp5_cleaned")
     row5 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    d5=pd.DataFrame(row5, columns=['code', 'name','open'])
+    d5 = pd.DataFrame(row5, columns=['code', 'name', 'open'])
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_rank_xstp10_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
-    row10 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_rank_xstp10_cleaned")
+    # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    row10 = cursor.fetchall()
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    d10=pd.DataFrame(row10, columns=['code', 'name','open'])
+    d10 = pd.DataFrame(row10, columns=['code', 'name', 'open'])
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_rank_xstp20_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
-    row20 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_rank_xstp20_cleaned")
+    # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    row20 = cursor.fetchall()
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    d20=pd.DataFrame(row20, columns=['code', 'name','open'])
+    d20 = pd.DataFrame(row20, columns=['code', 'name', 'open'])
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_rank_xstp30_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
-    row30 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_rank_xstp30_cleaned")
+    # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    row30 = cursor.fetchall()
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    d30=pd.DataFrame(row30, columns=['code', 'name','open'])
+    d30 = pd.DataFrame(row30, columns=['code', 'name', 'open'])
 
-
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_days")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_days")
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    df = pd.DataFrame(rows,columns=['days'])
+    df = pd.DataFrame(rows, columns=['days'])
 
     today = datetime.now().strftime("%Y%m%d")
     next = df[(df['days'] > today)]
-    #print(next)
-    nextday=next.iloc[0]['days']
-    #print(nextday)
+    # print(next)
+    nextday = next.iloc[0]['days']
+    # print(nextday)
 
-    before=df[(df['days'] < today)]
-    #print(before)
-    before_day01=before.iloc[len(before)-1]['days']
+    before = df[(df['days'] < today)]
+    # print(before)
+    before_day01 = before.iloc[len(before)-1]['days']
 
-    conn = sqlite3.connect('akshare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('akshare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM select_stock_zh_a_01")#+before_day01)  # 执行查询:ml-citation{ref="10" data="citationList"}
-    rows_daybf1 = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
-    #print(rows_daybf1)
+    # +before_day01)  # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM select_stock_zh_a_01")
+    # 获取所有结果:ml-citation{ref="6" data="citationList"}
+    rows_daybf1 = cursor.fetchall()
+    # print(rows_daybf1)
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    df_daybf1=pd.DataFrame(rows_daybf1, columns=['code','name', 'open', 'current','volume_ratio','turnover_ratio','total_capital','trade_capital','trade_volume','date'])
+    df_daybf1 = pd.DataFrame(rows_daybf1, columns=[
+                             'code', 'name', 'open', 'current', 'volume_ratio', 'turnover_ratio', 'total_capital', 'trade_capital', 'trade_volume', 'date'])
     print("\n" + "@" * 80 + "\n")
     print(df_daybf1)
 
-    dt1=dt[dt['code'].isin(d5['code'])]
-    dt2=dt1[dt1['code'].isin(d10['code'])]
-    dt3=dt2[dt2['code'].isin(d20['code'])]
-    df1 =dt3[dt3['code'].isin(d30['code'])]
+    dt1 = dt[dt['code'].isin(d5['code'])]
+    dt2 = dt1[dt1['code'].isin(d10['code'])]
+    dt3 = dt2[dt2['code'].isin(d20['code'])]
+    df1 = dt3[dt3['code'].isin(d30['code'])]
 
-    df=df1[df1['code'].isin(df_daybf1['code'])]
+    df = df1[df1['code'].isin(df_daybf1['code'])]
 
     print("\n" + "_" * 80 + "\n")
     print(df)
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='select_stock_zh_a_02_'+ today,
+        table_name='select_stock_zh_a_02_' + today,
         db_name='akshare.db',
         if_exists='replace'
     )

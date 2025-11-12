@@ -4,9 +4,11 @@ import sqlite3
 from sqlite3 import OperationalError
 from datetime import datetime
 
+
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+
 
 def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     """
@@ -53,13 +55,13 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #对pandas配置，列名与数据对其显示
+    # 对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     # 显示所有列
     pd.set_option('display.max_columns', None)
     # 显示所有行
-    #pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
 
@@ -85,27 +87,31 @@ if __name__ == '__main__':
                                        and '退' not in str(x) and not str(x).startswith('688'))]
     '''
 
-    conn = sqlite3.connect('aktushare.db')  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect('aktushare.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_zh_a_cleaned")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_zh_a_cleaned")
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
-    df = pd.DataFrame(rows,columns=['code','name', 'open', 'current','volume_ratio','turnover_ratio','total_capital','trade_capital','trade_volume'])
-    today=datetime.now().strftime("%Y%m%d")
+    df = pd.DataFrame(rows, columns=['code', 'name', 'open', 'current', 'volume_ratio',
+                      'turnover_ratio', 'total_capital', 'trade_capital', 'trade_volume'])
+    today = datetime.now().strftime("%Y%m%d")
     print(today)
     for row in rows:
         code = row[0]
         name = row[1]
         ope = row[2]
         cur = row[3]
-        vol=  row[4] #量比
-        tur=  row[5] #换手率
-        tol= row[6]  #总股本
-        tra= row[7]  #流通股票元
-        trv= row[8]  #成交量
-        if ope >1.0 and ((cur-ope)/ope) >0.02 and ((cur-ope)/ope) < 0.05 and vol>3.0 and tur>5 and tur<10 and tra>5000000000 and tra<20000000000:
-            new_row = {'code':code,'name':name,'open':ope,'current':cur,'volume_ratio':vol,'turnover_ratio':tur,'total_capital':tol,'trade_capital':tra,'trade_volume':trv,'date':today}
-            df=pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        vol = row[4]  # 量比
+        tur = row[5]  # 换手率
+        tol = row[6]  # 总股本
+        tra = row[7]  # 流通股票元
+        trv = row[8]  # 成交量
+        if ope > 1.0 and ((cur-ope)/ope) > 0.02 and ((cur-ope)/ope) < 0.05 and vol > 3.0 and tur > 5 and tur < 10 and tra > 5000000000 and tra < 20000000000:
+            new_row = {'code': code, 'name': name, 'open': ope, 'current': cur, 'volume_ratio': vol,
+                       'turnover_ratio': tur, 'total_capital': tol, 'trade_capital': tra, 'trade_volume': trv, 'date': today}
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
     print("\n" + "_" * 80 + "\n")
     df['date'] = today
@@ -113,7 +119,7 @@ if __name__ == '__main__':
     # 存储到SQLite数据库
     df_to_sqlite(
         df=df,
-        table_name='select_stock_zh_a_01_'+ today,
+        table_name='select_stock_zh_a_01_' + today,
         db_name='aktushare.db',
         if_exists='replace'
     )
