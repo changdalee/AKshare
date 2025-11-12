@@ -49,9 +49,11 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
         print(f"发生错误: {str(e)}")
         return False
 
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf8")  # 强制标准输出UTF-8编码
+    sys.stdout = io.TextIOWrapper(
+        sys.stdout.buffer, encoding="utf8")  # 强制标准输出UTF-8编码
     # 对pandas配置，列名与数据对其显示
     pd.set_option("display.unicode.ambiguous_as_wide", True)
     pd.set_option("display.unicode.east_asian_width", True)
@@ -62,21 +64,27 @@ if __name__ == '__main__':
 
     print_hi('PyCharm')
     db_path = r'D:\develops\python\aktushare.db'
-    conn = sqlite3.connect(db_path)  # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    # 连接数据库:ml-citation{ref="3,6" data="citationList"}
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM stock_basic")  # 执行查询:ml-citation{ref="10" data="citationList"}
+    # 执行查询:ml-citation{ref="10" data="citationList"}
+    cursor.execute("SELECT * FROM stock_basic")
     rows = cursor.fetchall()  # 获取所有结果:ml-citation{ref="6" data="citationList"}
     conn.close()  # 关闭连接:ml-citation{ref="8" data="citationList"}
     df = pd.DataFrame(rows, columns=["code", "name"])
     df['ak_code'] = df['code']
-    df['tu_code'] = np.where((df['code'] >= '600000'), (df['code'] + '.SH'), (df['code'] + '.SZ'))
-    df['bao_code'] = np.where(df['code'] >= '600000', 'sh.' + df['code'], 'sz.' + df['code'])
+    df['tu_code'] = np.where((df['code'] >= '600000'),
+                             (df['code'] + '.SH'), (df['code'] + '.SZ'))
+    df['bao_code'] = np.where(df['code'] >= '600000',
+                              'sh.' + df['code'], 'sz.' + df['code'])
 
     print("\n" + "&" * 99 + "\n")
-    df = pd.DataFrame(df, columns=["code", "name", "ak_code", "tu_code", "bao_code"])
+    df = pd.DataFrame(
+        df, columns=["code", "name", "ak_code", "tu_code", "bao_code"])
     today = datetime.now().strftime("%Y%m%d")
-    df['date']=today
+    df['date'] = today
     print(df)
 
     # 存储到SQLite数据库
-    df_to_sqlite(df=df, table_name='stock_basic_plus', db_name=db_path, if_exists='replace')
+    df_to_sqlite(df=df, table_name='stock_basic_plus',
+                 db_name=db_path, if_exists='replace')
