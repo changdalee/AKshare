@@ -8,6 +8,7 @@ def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
 
+
 def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
     """
     将pandas DataFrame存储到SQLite3数据库
@@ -53,31 +54,29 @@ def df_to_sqlite(df, table_name, db_name, if_exists, index=False):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #对pandas配置，列名与数据对其显示
+    # 对pandas配置，列名与数据对其显示
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     # 显示所有列
     pd.set_option('display.max_columns', None)
     # 显示所有行
-    #pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_rows', None)
 
     print_hi('PyCharm')
 
-
-    #查询所有股票的实时行情数据
+    # 查询所有股票的实时行情数据
     stock_zh_a_spot_em_df = ak.stock_zh_a_spot_em()
     print(stock_zh_a_spot_em_df)
 
     df = pd.DataFrame(stock_zh_a_spot_em_df)
     df = df.fillna(0)  # 填充所有NaN为0
-    #print(df)
-
+    # print(df)
 
     # 方法1: 直接通过列名列表选择（最常用）
     selected_cols = ['代码', '名称']
     df1 = df[selected_cols]
-    df=df1.rename(columns={'代码': 'code', '名称': 'name'})
-    #df['code'] = df['code'].apply(lambda x: x[2:7])
+    df = df1.rename(columns={'代码': 'code', '名称': 'name'})
+    # df['code'] = df['code'].apply(lambda x: x[2:7])
     print(df)
     print("\n" + "&" * 99 + "\n")
 
